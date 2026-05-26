@@ -1,81 +1,539 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RPD33 Studio</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0f1412;
-      --panel: #18201d;
-      --text: #f3f1e8;
-      --muted: #b8c1b5;
-      --accent: #e1b84f;
-      --line: rgba(255, 255, 255, 0.14);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    main {
-      width: min(960px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 56px 0;
-    }
-    header { padding-bottom: 32px; border-bottom: 1px solid var(--line); }
-    h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1; }
-    h2 { margin-top: 36px; }
-    p { color: var(--muted); max-width: 720px; }
-    a { color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
-    .card h3 { margin: 0 0 8px; }
-    .card p { margin: 0 0 12px; }
-    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0e13">
+<meta name="description" content="RPD33 Studio — Independent game studio crafting compact tactical games where every move matters.">
+<meta property="og:title" content="RPD33 Studio">
+<meta property="og:description" content="Independent game studio crafting compact tactical games where every move matters.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://therycer.github.io/">
+<meta property="og:image" content="https://therycer.github.io/assets/rpd33-studio-banner.jpg">
+<title>RPD33 Studio — Indie tactical games</title>
+<link rel="icon" type="image/png" href="assets/rpd33-logo.png">
+<link rel="apple-touch-icon" href="assets/rpd33-logo.png">
+<style>
+  :root{
+    --bg:#0a0e13;
+    --bg-deep:#070a0e;
+    --surface:#11161d;
+    --surface-2:#161d27;
+    --border:#1f2733;
+    --border-soft:#161d27;
+    --text:#e6ebf2;
+    --text-dim:#9aa6b8;
+    --text-faint:#5c6678;
+    --accent:#76ff3d;
+    --accent-soft:#4ade80;
+    --accent-glow:rgba(118,255,61,.18);
+    --gold:#d4a548;
+    --stealth:#4a90e2;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%;height:auto}
+
+  /* Ambient background */
+  .ambient{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(ellipse at 18% 0%, rgba(118,255,61,.07), transparent 55%),
+      radial-gradient(ellipse at 82% 100%, rgba(74,144,226,.06), transparent 55%),
+      var(--bg-deep);
+  }
+  .ambient::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at center, black 25%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse at center, black 25%, transparent 80%);
+  }
+  .scan{
+    pointer-events:none;position:fixed;inset:0;z-index:60;
+    background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(255,255,255,.01) 3px 4px);
+    mix-blend-mode:overlay;opacity:.5;
+  }
+
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:30;
+    background:rgba(10,14,19,.78);
+    backdrop-filter:saturate(160%) blur(10px);
+    -webkit-backdrop-filter:saturate(160%) blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.04em;font-size:15px}
+  .brand-logo{
+    width:34px;height:34px;border-radius:8px;
+    background:#000;
+    overflow:hidden;
+    box-shadow:0 0 0 1px rgba(118,255,61,.35), 0 0 18px rgba(118,255,61,.18);
+    display:grid;place-items:center;
+  }
+  .brand-logo img{width:100%;height:100%;object-fit:contain}
+  .brand-logo .fb{
+    width:100%;height:100%;
+    background:linear-gradient(135deg,#76ff3d 0%,#2bbf3a 100%);
+    color:#0a0e13;font-weight:900;font-size:14px;
+    display:grid;place-items:center;
+  }
+  .brand-name{color:var(--text)}
+  .brand-tag{color:var(--text-faint);font-weight:500;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase}
+  .nav-links{display:flex;gap:28px;align-items:center;font-size:14px;color:var(--text-dim);font-weight:500}
+  .nav-links a{transition:color .15s ease}
+  .nav-links a:hover{color:var(--accent)}
+  @media (max-width:640px){.nav-links{gap:16px}.brand-tag{display:none}.nav-links a:nth-child(2){display:none}}
+
+  /* Hero */
+  .hero{
+    position:relative;
+    min-height:560px;
+    padding:120px 0 100px;
+    overflow:hidden;
+    border-bottom:1px solid var(--border-soft);
+    display:flex;align-items:center;
+  }
+  .hero-bg{
+    position:absolute;inset:0;z-index:0;
+    overflow:hidden;
+  }
+  .hero-bg img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:center;
+    opacity:.55;
+  }
+  .hero-bg::after{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(10,14,19,.4) 0%, rgba(10,14,19,.85) 70%, var(--bg) 100%),
+      linear-gradient(90deg, rgba(10,14,19,.7) 0%, transparent 60%);
+  }
+  .hero-content{position:relative;z-index:1;width:100%}
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);
+    padding:6px 12px;border-radius:999px;
+    background:rgba(118,255,61,.08);
+    border:1px solid rgba(118,255,61,.28);
+    margin-bottom:24px;
+  }
+  .hero-eyebrow::before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 10px var(--accent);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  h1.hero-title{
+    font-size:clamp(44px,7.5vw,80px);
+    line-height:1;letter-spacing:-.025em;
+    font-weight:900;margin-bottom:22px;
+    background:linear-gradient(180deg,#ffffff 0%,#aab4c5 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-title .accent{
+    background:linear-gradient(180deg,#a3ff60 0%,#2bbf3a 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-sub{
+    font-size:clamp(17px,1.7vw,20px);
+    color:var(--text-dim);max-width:600px;
+    margin-bottom:36px;line-height:1.55;
+  }
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:10px;
+    font-weight:600;font-size:14.5px;letter-spacing:.01em;
+    transition:transform .15s ease, box-shadow .2s ease, background .15s ease, border-color .15s ease;
+    border:1px solid transparent;cursor:pointer;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,#76ff3d 0%,#3dbe2c 100%);
+    color:#0a0e13;
+    box-shadow:0 0 0 1px rgba(118,255,61,.4), 0 8px 24px -8px rgba(118,255,61,.45);
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(118,255,61,.6),0 12px 32px -10px rgba(118,255,61,.6)}
+  .btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn svg{width:16px;height:16px}
+
+  /* Sections */
+  section{padding:80px 0;position:relative}
+  .section-eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent);
+    margin-bottom:12px;
+  }
+  .section-title{
+    font-size:clamp(28px,3.6vw,38px);
+    font-weight:800;letter-spacing:-.01em;
+    line-height:1.15;margin-bottom:14px;
+  }
+  .section-lead{color:var(--text-dim);max-width:640px;margin-bottom:44px;font-size:16px}
+
+  /* Games */
+  .games{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:24px;
+  }
+  .card{
+    position:relative;
+    background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+    transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .card-game{display:block}
+  .card-game:hover{
+    transform:translateY(-3px);
+    border-color:rgba(118,255,61,.38);
+    box-shadow:0 24px 48px -24px rgba(0,0,0,.75), 0 0 0 1px rgba(118,255,61,.18);
+  }
+  .card-cover{
+    position:relative;
+    aspect-ratio:16/9;
+    background:#0d1117;
+    overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .card-cover img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .5s ease;
+  }
+  .card-game:hover .card-cover img{transform:scale(1.04)}
+  .card-cover::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, transparent 50%, rgba(10,14,19,.7) 100%);
+    pointer-events:none;
+  }
+  .card-badge{
+    position:absolute;top:14px;left:14px;z-index:2;
+    font-size:11px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);
+    background:rgba(10,14,19,.82);
+    border:1px solid rgba(118,255,61,.38);
+    padding:5px 10px;border-radius:6px;
+    backdrop-filter:blur(6px);
+  }
+  .card-badge.soon{color:var(--text-dim);border-color:var(--border)}
+  .card-body{padding:22px 22px 24px}
+  .card-title{font-size:23px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+  .card-meta{font-size:12px;color:var(--text-faint);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+  .card-desc{color:var(--text-dim);font-size:15px;margin-bottom:20px;line-height:1.55}
+  .card-cta{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--accent)}
+  .card-cta svg{width:14px;height:14px;transition:transform .15s ease}
+  .card-game:hover .card-cta svg{transform:translateX(3px)}
+  .card-placeholder{border-style:dashed;background:transparent}
+  .card-placeholder .card-cover{
+    background:repeating-linear-gradient(45deg, transparent 0 14px, rgba(255,255,255,.022) 14px 15px), #0c1116;
+    display:grid;place-items:center;
+  }
+  .card-placeholder .card-cover::after{display:none}
+  .placeholder-mark{
+    color:var(--text-faint);font-size:13px;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:600;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .placeholder-mark svg{width:34px;height:34px;opacity:.55}
+
+  /* Manifesto */
+  .manifesto{
+    border-top:1px solid var(--border-soft);
+    border-bottom:1px solid var(--border-soft);
+    background:linear-gradient(180deg, transparent 0%, rgba(118,255,61,.025) 50%, transparent 100%);
+    padding:72px 0;
+  }
+  .principles{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:32px;
+  }
+  .principle{position:relative;padding-left:18px}
+  .principle::before{
+    content:"";position:absolute;left:0;top:6px;bottom:6px;
+    width:2px;background:linear-gradient(180deg, var(--accent), transparent);
+    border-radius:2px;
+  }
+  .principle h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.005em}
+  .principle p{font-size:14px;color:var(--text-dim);line-height:1.55}
+
+  /* About strip with studio image */
+  .about{padding:84px 0}
+  .about-grid{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;
+  }
+  @media (max-width:840px){.about-grid{grid-template-columns:1fr;gap:32px}}
+  .about-text p{color:var(--text-dim);font-size:16px;margin-bottom:14px;line-height:1.65}
+  .about-media{
+    position:relative;border-radius:14px;overflow:hidden;
+    border:1px solid var(--border);
+    aspect-ratio:16/10;
+    background:#0d1117;
+  }
+  .about-media img{width:100%;height:100%;object-fit:cover}
+  .about-media::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, transparent 60%, rgba(10,14,19,.4) 100%);
+  }
+  .stat-row{display:flex;gap:28px;margin-top:24px;flex-wrap:wrap}
+  .stat{padding-right:22px;border-right:1px solid var(--border)}
+  .stat:last-child{border-right:none;padding-right:0}
+  .stat-num{font-size:28px;font-weight:800;color:var(--accent);letter-spacing:-.01em;line-height:1}
+  .stat-label{font-size:12px;color:var(--text-faint);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+
+  /* Resources */
+  .resources{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .res-card{
+    display:block;background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;
+    padding:22px 22px 24px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .res-card:hover{border-color:rgba(118,255,61,.35);transform:translateY(-2px)}
+  .res-icon{
+    width:36px;height:36px;border-radius:8px;
+    background:rgba(118,255,61,.1);
+    border:1px solid rgba(118,255,61,.25);
+    display:grid;place-items:center;color:var(--accent);
+    margin-bottom:14px;
+  }
+  .res-icon svg{width:18px;height:18px}
+  .res-title{font-weight:700;font-size:15.5px;margin-bottom:4px}
+  .res-desc{font-size:13.5px;color:var(--text-dim);line-height:1.5;margin-bottom:14px}
+  .res-link{font-size:13px;font-weight:600;color:var(--accent);word-break:break-all}
+
+  /* Footer */
+  footer{border-top:1px solid var(--border-soft);padding:36px 0 44px;color:var(--text-dim);font-size:13.5px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .foot-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+  .foot-mark{
+    width:24px;height:24px;border-radius:6px;background:#000;overflow:hidden;
+    display:grid;place-items:center;
+  }
+  .foot-mark img{width:100%;height:100%;object-fit:contain}
+  .foot a{color:var(--text-dim);transition:color .15s}
+  .foot a:hover{color:var(--accent)}
+  .foot-links{display:flex;gap:22px;flex-wrap:wrap}
+</style>
 </head>
 <body>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap nav">
+      <a href="/" class="brand" aria-label="RPD33 Studio home">
+        <span class="brand-logo">
+          <img src="assets/rpd33-logo.png" alt="RPD33 Studio logo" onerror="this.outerHTML='&lt;span class=\'fb\'&gt;R&lt;/span&gt;'">
+        </span>
+        <span class="brand-name">RPD33</span>
+        <span class="brand-tag">Studio</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#games">Games</a>
+        <a href="#about">Studio</a>
+        <a href="#resources">Resources</a>
+        <a href="mailto:privacy@rpd33studio.com">Contact</a>
+      </nav>
+    </div>
+  </header>
+
   <main>
-    <header>
-      <h1>RPD33 Studio</h1>
-      <p>Independent game studio focused on compact tactical games, clear rules, and tense decision-making.</p>
-    </header>
-
-    <section>
-      <h2>Games</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>Ninjagrid</h3>
-          <p>A turn-based stealth puzzle game where every move matters.</p>
-          <a href="./ninjagrid.html">Application page</a>
-        </article>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/rpd33-studio-banner.jpg" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="wrap hero-content">
+        <div class="hero-eyebrow">Independent Game Studio</div>
+        <h1 class="hero-title">RPD33 <span class="accent">Studio</span></h1>
+        <p class="hero-sub">Independent game studio crafting compact tactical games where every move matters. Indie games, experimental ideas, AI-powered development.</p>
+        <div class="hero-cta">
+          <a href="#games" class="btn btn-primary">
+            See our games
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a href="#about" class="btn btn-ghost">About the studio</a>
+        </div>
       </div>
     </section>
 
-    <section>
-      <h2>Publisher Resources</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>Privacy Policy</h3>
-          <p>Privacy policy for Ninjagrid and related publishing information.</p>
-          <a href="./ninjagrid-legal/">Open privacy policy</a>
-        </article>
-        <article class="card">
-          <h3>app-ads.txt</h3>
-          <p>Authorized digital sellers file for advertising verification.</p>
-          <a href="./app-ads.txt">Open app-ads.txt</a>
-        </article>
+    <!-- GAMES -->
+    <section id="games">
+      <div class="wrap">
+        <div class="section-eyebrow">Our Games</div>
+        <h2 class="section-title">Built for thinkers, not button-mashers.</h2>
+        <p class="section-lead">Small worlds. Sharp rules. Decisions you remember.</p>
+
+        <div class="games">
+          <!-- Ninjagrid -->
+          <a href="ninjagrid.html" class="card card-game" aria-label="Open Ninjagrid page">
+            <div class="card-cover">
+              <span class="card-badge">Available now</span>
+              <img src="assets/ninjagrid-banner.jpg" alt="Ninjagrid cover art — a hooded ninja on a rooftop overlooking a feudal city at night" loading="lazy" onerror="this.style.display='none'">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Ninjagrid</div>
+              <div class="card-meta">Stealth puzzle · Android · Windows · Web</div>
+              <div class="card-desc">A turn-based stealth puzzle game where every move matters. Read enemy vision, use ninja tools, and reach the objective unseen across 100 contracts.</div>
+              <span class="card-cta">
+                Game page
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Future game -->
+          <div class="card card-placeholder" aria-label="Next project — in development">
+            <div class="card-cover">
+              <span class="card-badge soon">In development</span>
+              <div class="placeholder-mark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 3"/>
+                  <path d="M12 8v8M8 12h8"/>
+                </svg>
+                Next project
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title">Untitled · Project 02</div>
+              <div class="card-meta">Coming later</div>
+              <div class="card-desc">The next compact tactical experiment from RPD33 Studio. Details when it's ready.</div>
+              <span class="card-cta" style="color:var(--text-faint)">Stay tuned</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <footer>
-      RPD33 Studio. Contact: <a href="mailto:privacy@rpd33studio.com">privacy@rpd33studio.com</a>
-    </footer>
+    <!-- MANIFESTO -->
+    <section class="manifesto">
+      <div class="wrap">
+        <div class="section-eyebrow">Studio principles</div>
+        <h2 class="section-title" style="margin-bottom:36px">Compact games. Honest design.</h2>
+        <div class="principles">
+          <div class="principle">
+            <h3>Every move matters</h3>
+            <p>We build tight tactical loops where decisions have weight, not filler systems that exist to pad runtime.</p>
+          </div>
+          <div class="principle">
+            <h3>Readable, not minimal</h3>
+            <p>Clean visual language and clear rules. You should always know what's happening on screen, and why.</p>
+          </div>
+          <div class="principle">
+            <h3>Ship, learn, iterate</h3>
+            <p>Small focused releases over endless betas. Player feedback shapes what comes next.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="about">
+      <div class="wrap about-grid">
+        <div class="about-text">
+          <div class="section-eyebrow">About the studio</div>
+          <h2 class="section-title">A small studio building precise games.</h2>
+          <p>RPD33 Studio is an independent game studio focused on compact tactical experiences — short to start, deep to master. Our work lives at the intersection of stealth, strategy, and clean systems design.</p>
+          <p>We make small, focused games that respect your time. Less filler. More decisions. Our debut, <a href="ninjagrid.html" style="color:var(--accent)">Ninjagrid</a>, is a turn-based stealth puzzle now available on Android, with Windows and Web demos.</p>
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat-num">100</div>
+              <div class="stat-label">Ninjagrid contracts</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">10</div>
+              <div class="stat-label">Chapters</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">3</div>
+              <div class="stat-label">Languages</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-media">
+          <img src="assets/rpd33-studio-banner.jpg" alt="RPD33 Studio — indie games, experimental ideas, AI-powered development" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </div>
+      </div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section id="resources">
+      <div class="wrap">
+        <div class="section-eyebrow">Publisher resources</div>
+        <h2 class="section-title">Compliance &amp; transparency</h2>
+        <p class="section-lead">The legal and verification files you may need as a player, partner, or platform.</p>
+
+        <div class="resources">
+          <a class="res-card" href="https://therycer.github.io/ninjagrid-legal/" rel="noopener">
+            <div class="res-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div class="res-title">Privacy Policy</div>
+            <div class="res-desc">How Ninjagrid handles data, advertising identifiers, and user rights.</div>
+            <div class="res-link">therycer.github.io/ninjagrid-legal/ →</div>
+          </a>
+
+          <a class="res-card" href="https://therycer.github.io/app-ads.txt" rel="noopener">
+            <div class="res-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
+            </div>
+            <div class="res-title">app-ads.txt</div>
+            <div class="res-desc">Authorized digital sellers declaration for AdMob and ad networks.</div>
+            <div class="res-link">therycer.github.io/app-ads.txt →</div>
+          </a>
+
+          <a class="res-card" href="mailto:privacy@rpd33studio.com">
+            <div class="res-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/></svg>
+            </div>
+            <div class="res-title">Contact</div>
+            <div class="res-desc">Press, partnerships, privacy requests, or general questions.</div>
+            <div class="res-link">privacy@rpd33studio.com</div>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div class="foot-brand">
+        <span class="foot-mark">
+          <img src="assets/rpd33-logo.png" alt="" onerror="this.parentElement.innerHTML='R';this.parentElement.style.background='linear-gradient(135deg,#76ff3d,#2bbf3a)';this.parentElement.style.color='#0a0e13';this.parentElement.style.fontWeight='900';this.parentElement.style.fontSize='11px'">
+        </span>
+        RPD33 Studio
+      </div>
+      <div class="foot-links">
+        <a href="ninjagrid.html">Ninjagrid</a>
+        <a href="https://therycer.github.io/ninjagrid-legal/">Privacy</a>
+        <a href="https://therycer.github.io/app-ads.txt">app-ads.txt</a>
+        <a href="mailto:privacy@rpd33studio.com">privacy@rpd33studio.com</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

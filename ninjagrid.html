@@ -1,86 +1,357 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ninjagrid - RPD33 Studio</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #101411;
-      --panel: #19211d;
-      --text: #f5f1e8;
-      --muted: #b9c2b7;
-      --accent: #dfb650;
-      --line: rgba(255, 255, 255, 0.14);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    main {
-      width: min(960px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 56px 0;
-    }
-    nav { margin-bottom: 28px; }
-    h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1; }
-    h2 { margin-top: 36px; }
-    p { color: var(--muted); max-width: 760px; }
-    a { color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
-    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 28px 0; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
-    .label { color: var(--muted); font-size: 0.9rem; margin-bottom: 4px; }
-    .value { font-weight: 700; }
-    ul { color: var(--muted); }
-    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070a14">
+<meta name="description" content="Ninjagrid — Turn-based ninja stealth on a tactical grid. 100 contracts across 10 chapters. Available on Android, with Windows and Web demos. By RPD33 Studio.">
+<meta property="og:title" content="Ninjagrid — Turn-based ninja stealth on a tactical grid">
+<meta property="og:description" content="Infiltrate compact tactical boards, read enemy vision, use ninja tools, and reach the objective without being captured.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://therycer.github.io/ninjagrid.html">
+<meta property="og:image" content="https://therycer.github.io/assets/ninjagrid-banner.jpg">
+<title>Ninjagrid — Turn-based ninja stealth on a tactical grid · RPD33 Studio</title>
+<link rel="icon" type="image/jpeg" href="assets/ninjagrid-cover.jpg">
+<link rel="apple-touch-icon" href="assets/ninjagrid-cover.jpg">
+<style>
+:root{--bg:#070a14;--bg-deep:#050811;--surface:#0e131f;--surface-2:#141a28;--border:#1c2434;--border-soft:#141a28;--text:#e6ebf2;--text-dim:#9aa6b8;--text-faint:#5c6678;--accent:#d4a548;--accent-soft:#e8c267;--green:#76ff3d;--moon:#cfe6ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%;height:auto}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse 60% 40% at 80% 10%, rgba(207,230,255,.06), transparent 60%),radial-gradient(ellipse 50% 40% at 20% 90%, rgba(212,165,72,.05), transparent 60%),var(--bg-deep)}
+.bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at center, black 20%, transparent 75%);-webkit-mask-image:radial-gradient(ellipse at center, black 20%, transparent 75%)}
+.scan{pointer-events:none;position:fixed;inset:0;z-index:60;background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(255,255,255,.01) 3px 4px);mix-blend-mode:overlay;opacity:.5}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:30;background:rgba(7,10,20,.82);backdrop-filter:saturate(160%) blur(10px);-webkit-backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--border-soft)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--text-dim);transition:color .15s ease}
+.back svg{width:14px;height:14px;transition:transform .15s ease}
+.back:hover{color:var(--accent)}
+.back:hover svg{transform:translateX(-3px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.04em;font-size:14px}
+.brand-logo{width:30px;height:30px;border-radius:7px;background:#000;overflow:hidden;box-shadow:0 0 0 1px rgba(118,255,61,.32), 0 0 14px rgba(118,255,61,.18);display:grid;place-items:center}
+.brand-logo img{width:100%;height:100%;object-fit:contain}
+.brand-tag{color:var(--text-faint);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:520px){.brand-tag,.brand>span:not(.brand-logo){display:none}}
+.hero{position:relative;min-height:620px;padding:80px 0 110px;overflow:hidden;border-bottom:1px solid var(--border-soft);display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:.7}
+.hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(7,10,20,.25) 0%, rgba(7,10,20,.7) 70%, var(--bg) 100%),linear-gradient(90deg, rgba(7,10,20,.6) 0%, transparent 55%)}
+.hero-content{position:relative;z-index:1;width:100%}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);padding:6px 12px;border-radius:999px;background:rgba(212,165,72,.08);border:1px solid rgba(212,165,72,.3);margin-bottom:22px}
+.hero-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+h1.hero-title{font-size:clamp(56px,10vw,108px);line-height:.92;letter-spacing:-.03em;font-weight:900;margin-bottom:18px;background:linear-gradient(180deg, #ffffff 0%, #c4cfe0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 60px rgba(207,230,255,.15)}
+.hero-sub{font-size:clamp(18px,1.9vw,22px);color:var(--text);max-width:640px;margin-bottom:14px;line-height:1.4;font-weight:500}
+.hero-sub .accent{color:var(--accent)}
+.hero-desc{color:var(--text-dim);max-width:600px;font-size:16px;line-height:1.6;margin-bottom:36px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:10px;font-weight:600;font-size:14.5px;letter-spacing:.01em;transition:transform .15s ease, box-shadow .2s ease, border-color .15s ease;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:linear-gradient(180deg, #e8c267 0%, #b8902f 100%);color:#1a1206;box-shadow:0 0 0 1px rgba(212,165,72,.45), 0 10px 28px -10px rgba(212,165,72,.5)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(212,165,72,.65), 0 14px 36px -12px rgba(212,165,72,.65)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn svg{width:16px;height:16px}
+section{padding:80px 0;position:relative}
+.section-eyebrow{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.section-title{font-size:clamp(28px,3.4vw,36px);font-weight:800;letter-spacing:-.01em;line-height:1.18;margin-bottom:14px}
+.section-lead{color:var(--text-dim);max-width:640px;margin-bottom:44px;font-size:16px}
+.pitch{padding:88px 0;border-bottom:1px solid var(--border-soft)}
+.pitch-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+@media (max-width:840px){.pitch-grid{grid-template-columns:1fr;gap:32px}}
+.pitch-text p{color:var(--text-dim);font-size:16.5px;margin-bottom:14px;line-height:1.65}
+.pitch-media{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1/1;background:#0d1117;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+.pitch-media img{width:100%;height:100%;object-fit:cover}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.feature{background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color .15s ease, transform .15s ease}
+.feature:hover{border-color:rgba(212,165,72,.35);transform:translateY(-2px)}
+.feature-icon{width:38px;height:38px;border-radius:9px;background:rgba(212,165,72,.1);border:1px solid rgba(212,165,72,.3);display:grid;place-items:center;color:var(--accent);margin-bottom:14px}
+.feature-icon svg{width:18px;height:18px}
+.feature h3{font-size:15.5px;font-weight:700;margin-bottom:6px;letter-spacing:-.005em}
+.feature p{font-size:14px;color:var(--text-dim);line-height:1.55}
+.shots{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:auto auto;gap:14px}
+.shot{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#0d1117;aspect-ratio:16/9;transition:transform .2s ease, border-color .2s ease}
+.shot:hover{transform:translateY(-2px);border-color:rgba(212,165,72,.4)}
+.shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.shot:hover img{transform:scale(1.04)}
+.shot-caption{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px;background:linear-gradient(180deg, transparent 0%, rgba(7,10,20,.92) 100%);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--text);font-weight:600}
+.shot-big{grid-column:span 2;grid-row:span 2;aspect-ratio:16/10}
+@media (max-width:840px){.shots{grid-template-columns:1fr 1fr;grid-template-rows:auto}.shot-big{grid-column:span 2;grid-row:auto;aspect-ratio:16/9}}
+@media (max-width:520px){.shots{grid-template-columns:1fr}.shot-big{grid-column:auto}}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.tool{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;transition:border-color .15s}
+.tool:hover{border-color:rgba(212,165,72,.32)}
+.tool-icon{flex-shrink:0;width:34px;height:34px;border-radius:8px;background:rgba(212,165,72,.1);border:1px solid rgba(212,165,72,.3);color:var(--accent);display:grid;place-items:center}
+.tool-icon svg{width:16px;height:16px}
+.tool h4{font-size:14.5px;font-weight:700;margin-bottom:3px}
+.tool p{font-size:13px;color:var(--text-dim);line-height:1.5}
+.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.chapter{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;transition:border-color .15s, transform .15s}
+.chapter:hover{border-color:rgba(212,165,72,.3);transform:translateY(-1px)}
+.chapter-num{flex-shrink:0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;font-weight:700;color:var(--accent);background:rgba(212,165,72,.08);border:1px solid rgba(212,165,72,.25);padding:4px 8px;border-radius:6px;line-height:1;letter-spacing:.05em}
+.chapter-text h4{font-size:14.5px;font-weight:700;margin-bottom:2px}
+.chapter-text p{font-size:12.5px;color:var(--text-dim);line-height:1.45}
+.platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.plat{display:block;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;transition:border-color .15s, transform .15s}
+.plat:hover{border-color:rgba(212,165,72,.35);transform:translateY(-2px)}
+.plat-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.plat-icon{width:32px;height:32px;border-radius:7px;background:rgba(212,165,72,.1);border:1px solid rgba(212,165,72,.3);color:var(--accent);display:grid;place-items:center}
+.plat-icon svg{width:16px;height:16px}
+.plat h4{font-size:15px;font-weight:700;flex:1}
+.plat-status{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.status-full{background:rgba(118,255,61,.1);color:var(--green);border:1px solid rgba(118,255,61,.35)}
+.status-demo{background:rgba(212,165,72,.1);color:var(--accent);border:1px solid rgba(212,165,72,.3)}
+.plat p{font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:10px}
+.plat-link{font-size:12.5px;color:var(--accent);font-weight:600;word-break:break-all}
+.specs{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+@media (max-width:640px){.specs{grid-template-columns:1fr}}
+.spec{padding:22px 24px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.spec:nth-child(2n){border-right:none}
+.spec:nth-last-child(-n+2){border-bottom:none}
+@media (max-width:640px){.spec{border-right:none;border-bottom:1px solid var(--border)}.spec:last-child{border-bottom:none}}
+.spec-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px}
+.spec-value{font-size:15.5px;color:var(--text);font-weight:600;word-break:break-all;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.spec-value.text{font-family:inherit;font-weight:500}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.link-card{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s, transform .15s}
+.link-card:hover{border-color:rgba(212,165,72,.35);transform:translateY(-2px)}
+.link-icon{flex-shrink:0;width:38px;height:38px;border-radius:9px;background:rgba(212,165,72,.1);border:1px solid rgba(212,165,72,.3);display:grid;place-items:center;color:var(--accent)}
+.link-icon svg{width:18px;height:18px}
+.link-text{flex:1;min-width:0}
+.link-title{font-size:14.5px;font-weight:700;margin-bottom:2px}
+.link-url{font-size:12.5px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-arrow{color:var(--text-faint);transition:transform .15s, color .15s}
+.link-card:hover .link-arrow{color:var(--accent);transform:translateX(3px)}
+.link-arrow svg{width:16px;height:16px}
+footer{border-top:1px solid var(--border-soft);padding:36px 0 44px;color:var(--text-dim);font-size:13.5px}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.foot-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+.foot-mark{width:24px;height:24px;border-radius:6px;background:#000;overflow:hidden;display:grid;place-items:center}
+.foot-mark img{width:100%;height:100%;object-fit:contain}
+.foot a{color:var(--text-dim);transition:color .15s}
+.foot a:hover{color:var(--accent)}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.alt-bg{background:rgba(20,26,40,.4);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+</style>
 </head>
 <body>
-  <main>
-    <nav><a href="./index.html">RPD33 Studio</a></nav>
+<div class="bg" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
 
-    <header>
-      <h1>Ninjagrid</h1>
-      <p>A turn-based stealth puzzle game where every move matters. Infiltrate compact tactical boards, read enemy vision, use ninja tools, and reach the objective without being captured.</p>
-    </header>
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="back" aria-label="Back to RPD33 Studio home">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+      Back to studio
+    </a>
+    <a href="index.html" class="brand" aria-label="RPD33 Studio">
+      <span class="brand-logo"><img src="assets/rpd33-logo.png" alt="RPD33 Studio" onerror="this.outerHTML='&lt;span style=\'width:100%;height:100%;background:linear-gradient(135deg,#76ff3d,#2bbf3a);color:#0a0e13;font-weight:900;font-size:13px;display:grid;place-items:center\'&gt;R&lt;/span&gt;'"></span>
+      <span>RPD33</span>
+      <span class="brand-tag">Studio</span>
+    </a>
+  </div>
+</header>
 
-    <section class="meta" aria-label="Application details">
-      <div class="card">
-        <div class="label">Package name</div>
-        <div class="value">com.rpd33studio.ninjagrid</div>
+<main>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="assets/ninjagrid-banner.jpg" alt="" onerror="this.style.display='none'">
+    </div>
+    <div class="wrap hero-content">
+      <div class="hero-eyebrow">RPD33 Studio · Project 01</div>
+      <h1 class="hero-title">NINJAGRID</h1>
+      <p class="hero-sub">A turn-based <span class="accent">stealth puzzle</span> game where every move matters.</p>
+      <p class="hero-desc">Infiltrate compact tactical boards, read enemy vision, use ninja tools, and reach the objective without being captured.</p>
+      <div class="hero-cta">
+        <a href="https://play.google.com/store/apps/details?id=com.rpd33studio.ninjagrid" class="btn btn-primary" rel="noopener" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.3c-.4.3-.6.8-.6 1.4v16.6c0 .6.2 1.1.6 1.4l.1.1L13 12 3.6 2.3zM14 11l2.7-2.7L5.4 2.1c-.4-.2-.8-.2-1.1 0L14 11zm6.9 1L17.5 10.1l-3 3 3 3 3.4-1.9c1-.6 1-2 0-2.5zM4.3 21.8l9.7-9.7L17 15 5.4 21.8c-.3.2-.7.2-1.1 0z"/></svg>
+          Get it on Google Play
+        </a>
+        <a href="https://therycer.itch.io/ninjagrid" class="btn btn-ghost" rel="noopener" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l4-5h10l4 5"/><path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="M9 14a3 3 0 0 0 6 0"/></svg>
+          Try the demo on itch.io
+        </a>
       </div>
-      <div class="card">
-        <div class="label">Platform</div>
-        <div class="value">Android / Google Play</div>
+    </div>
+  </section>
+
+  <section class="pitch">
+    <div class="wrap pitch-grid">
+      <div class="pitch-text">
+        <div class="section-eyebrow">The pitch</div>
+        <h2 class="section-title">Stealth as a puzzle, not a chase.</h2>
+        <p>You're a shinobi. Every mission is a compact tactical board. Every guard has a vision cone. Every shadow is a tool. The right move at the right time is the entire game.</p>
+        <p>No real-time pressure. No randomness disguised as challenge. Just you, the board, and the choices in front of you. Mastery comes from planning, not reflexes.</p>
+        <p style="color:var(--text);font-weight:500">Read the grid. Time the patrols. Slip through unseen.</p>
       </div>
-      <div class="card">
-        <div class="label">Publisher</div>
-        <div class="value">RPD33 Studio</div>
+      <div class="pitch-media">
+        <img src="assets/ninjagrid-cover.jpg" alt="Ninjagrid cover — a hooded shinobi in close-up under a full moon, with a feudal city behind" loading="lazy" onerror="this.parentElement.style.display='none'">
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <h2>Publisher Links</h2>
-      <ul>
-        <li><a href="./ninjagrid-legal/">Privacy Policy</a></li>
-        <li><a href="./app-ads.txt">app-ads.txt</a></li>
-        <li><a href="https://play.google.com/store/apps/details?id=com.rpd33studio.ninjagrid">Google Play listing</a></li>
-      </ul>
-    </section>
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">What's in the game</div>
+      <h2 class="section-title">Tight systems. Honest difficulty.</h2>
+      <p class="section-lead">Every system in Ninjagrid exists to make one moment better: the moment you find the perfect route through an impossible board.</p>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div><h3>Tactical grid</h3><p>Compact boards designed for clean lines of sight, hidden routes, and elegant solutions.</p></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></svg></div><h3>Read the vision</h3><p>Every enemy sees in cones. Learn the angles, time the gaps, slip through unseen.</p></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div><h3>Ninja toolkit</h3><p>Smoke bombs, lanterns, flash powder, shadow cloak, hourglass. A tight kit, learned with precision.</p></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Turn-based</h3><p>Think as long as you need. Every move is yours alone. The board waits for you.</p></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><h3>100 contracts</h3><p>A full campaign across 10 chapters, plus daily missions from a generated pool.</p></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16M6 17V8h12v9M9 17V8M15 17V8M9 5h6M11 3h2"/></svg></div><h3>Codex of shadows</h3><p>Every enemy and trap you encounter unlocks an entry. Learning becomes part of the progression.</p></div>
+      </div>
+    </div>
+  </section>
 
-    <section>
-      <h2>Support</h2>
-      <p>For privacy or publishing questions, contact <a href="mailto:privacy@rpd33studio.com">privacy@rpd33studio.com</a>.</p>
-    </section>
+  <section class="alt-bg">
+    <div class="wrap">
+      <div class="section-eyebrow">Gameplay</div>
+      <h2 class="section-title">From briefing to the board.</h2>
+      <p class="section-lead">Real screenshots from the current Android build.</p>
+      <div class="shots">
+        <div class="shot shot-big"><img src="assets/screenshots/01-main-menu.jpg" alt="Ninjagrid main menu" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">Main menu</div></div>
+        <div class="shot"><img src="assets/screenshots/02-chapter-select.jpg" alt="Chapter selection screen" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">Chapter select</div></div>
+        <div class="shot"><img src="assets/screenshots/04-briefing.jpg" alt="Mission briefing with Operadora Kuro" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">Mission briefing</div></div>
+        <div class="shot"><img src="assets/screenshots/05-board.jpg" alt="In-mission tactical grid" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">On the board</div></div>
+        <div class="shot"><img src="assets/screenshots/06-backpack.jpg" alt="Backpack with ninja tools" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">Backpack</div></div>
+        <div class="shot"><img src="assets/screenshots/03-shop.jpg" alt="Clan shop interface" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="shot-caption">Clan shop</div></div>
+      </div>
+    </div>
+  </section>
 
-    <footer>
-      RPD33 Studio. Ninjagrid is published under package <code>com.rpd33studio.ninjagrid</code>.
-    </footer>
-  </main>
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">The backpack</div>
+      <h2 class="section-title">Tools that open routes, not solve boards.</h2>
+      <p class="section-lead">Non-lethal kit you'll learn to wield with precision. Bought with clan currency. Saved for the boards that actually need them.</p>
+      <div class="tool-grid">
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="6"/><path d="M9 7l-1-3M12 4V2M15 7l1-3"/></svg></div><div><h4>Smoke bomb</h4><p>Blocks enemy vision in a short area for one turn. Buys you a window.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6l2 4v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7z"/><circle cx="12" cy="13" r="2"/></svg></div><div><h4>Covered lantern</h4><p>Extends your vision for several turns. Reads patrols and traps from afar.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div><h4>Echo amulet</h4><p>Briefly reveals enemies and their vision cones without lifting the fog completely.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3l7 7-7 7M3 10v4a2 2 0 0 0 2 2h11"/></svg></div><div><h4>Grapple hook</h4><p>Reposition two cells in a straight line. Breaks containment, opens precise routes.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3v18M5 3h12l-3 6 3 6H5"/></svg></div><div><h4>Decoy whistle</h4><p>Pulls a nearby guard toward your position. Manipulate patrols without combat.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></div><div><h4>Flash powder</h4><p>Blinds nearby enemies for one turn. Tactical rescue when a route goes wrong.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2v6c0 4 6 4 6 8s-6 4-6 8v-2h12v2c0-4-6-4-6-8s6-4 6-8V2H6z"/></svg></div><div><h4>Hourglass sand</h4><p>Freezes enemy patrols for one full turn. The cleanest reset in the kit.</p></div></div>
+        <div class="tool"><div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 9c2-4 5-6 7-6s5 2 7 6c-2 4-5 6-7 6s-5-2-7-6z"/><path d="M12 15v6"/></svg></div><div><h4>Shadow cloak</h4><p>Avoid enemy detection for two enemy turns. Pure stealth, used for the hardest crossings.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt-bg">
+    <div class="wrap">
+      <div class="section-eyebrow">The campaign</div>
+      <h2 class="section-title">10 chapters. 100 contracts.</h2>
+      <p class="section-lead">From tutorial temples to the final infiltration. Boards scale from 8×8 up to 26×26 as the campaign tightens.</p>
+      <div class="chapters">
+        <div class="chapter"><span class="chapter-num">01</span><div class="chapter-text"><h4>Temple of Ashes</h4><p>Tutorial ground. Small boards, simple patrols, the language of the game.</p></div></div>
+        <div class="chapter"><span class="chapter-num">02</span><div class="chapter-text"><h4>Black Arch Castle</h4><p>Corridors close in. Vigilance coordinates. Movement windows shorten.</p></div></div>
+        <div class="chapter"><span class="chapter-num">03</span><div class="chapter-text"><h4>Firefly Forest</h4><p>Shadows become a tool. Mixed distraction, hidden routes, clean takedowns.</p></div></div>
+        <div class="chapter"><span class="chapter-num">04</span><div class="chapter-text"><h4>Silent Iron Fortress</h4><p>Military discipline. Heavy patrols. Less room to improvise.</p></div></div>
+        <div class="chapter"><span class="chapter-num">05</span><div class="chapter-text"><h4>Palace of the Shadow Shogun</h4><p>Ceremonial halls, sharper traps, personal objectives. End of the first arc.</p></div></div>
+        <div class="chapter"><span class="chapter-num">06</span><div class="chapter-text"><h4>Port of Chains</h4><p>The war moves outdoors. Docks, holds, open routes that widen the mental map.</p></div></div>
+        <div class="chapter"><span class="chapter-num">07</span><div class="chapter-text"><h4>Submerged Archives</h4><p>Information weighs as much as survival. Patience and precise execution.</p></div></div>
+        <div class="chapter"><span class="chapter-num">08</span><div class="chapter-text"><h4>Crimson Forge</h4><p>Industrial, hostile. Environmental threats and aggressive vigilance combined.</p></div></div>
+        <div class="chapter"><span class="chapter-num">09</span><div class="chapter-text"><h4>Citadel of Mirrors</h4><p>The enemy is expecting a ghost. Heavy vision pressure, no wasted moves.</p></div></div>
+        <div class="chapter"><span class="chapter-num">10</span><div class="chapter-text"><h4>Throne Before Dawn</h4><p>The longest boards. Mini-finales. The campaign earns its ending.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">Available on</div>
+      <h2 class="section-title">Where to play</h2>
+      <p class="section-lead">Full Android release. Free Windows and Web demos covering chapters 1–3.</p>
+      <div class="platforms">
+        <a class="plat" href="https://play.google.com/store/apps/details?id=com.rpd33studio.ninjagrid" target="_blank" rel="noopener">
+          <div class="plat-head"><div class="plat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3c-.4.3-.6.8-.6 1.4v16.6c0 .6.2 1.1.6 1.4l.1.1L13 12 3.6 2.3zM14 11l2.7-2.7L5.4 2.1c-.4-.2-.8-.2-1.1 0L14 11zm6.9 1L17.5 10.1l-3 3 3 3 3.4-1.9c1-.6 1-2 0-2.5z"/></svg></div><h4>Android</h4><span class="plat-status status-full">Full game</span></div>
+          <p>All 100 contracts, daily missions, shop, codex, progression. Available on Google Play.</p>
+          <div class="plat-link">play.google.com/.../com.rpd33studio.ninjagrid →</div>
+        </a>
+        <a class="plat" href="https://therycer.itch.io/ninjagrid" target="_blank" rel="noopener">
+          <div class="plat-head"><div class="plat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l4-5h10l4 5"/><path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="M9 14a3 3 0 0 0 6 0"/></svg></div><h4>itch.io · Web &amp; Windows</h4><span class="plat-status status-demo">Demo</span></div>
+          <p>Free demo covering chapters 1–3. Playable in browser or downloadable for Windows. No ads.</p>
+          <div class="plat-link">therycer.itch.io/ninjagrid →</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="specs" class="alt-bg">
+    <div class="wrap">
+      <div class="section-eyebrow">Game details</div>
+      <h2 class="section-title">Specs &amp; identifiers</h2>
+      <p class="section-lead">For stores, partners, and the curious.</p>
+      <div class="specs">
+        <div class="spec"><div class="spec-label">Package name</div><div class="spec-value">com.rpd33studio.ninjagrid</div></div>
+        <div class="spec"><div class="spec-label">Platforms</div><div class="spec-value text">Android · Windows · Web</div></div>
+        <div class="spec"><div class="spec-label">Publisher</div><div class="spec-value text">RPD33 Studio</div></div>
+        <div class="spec"><div class="spec-label">Genre</div><div class="spec-value text">Stealth · Turn-based puzzle</div></div>
+        <div class="spec"><div class="spec-label">Languages</div><div class="spec-value text">English · Spanish · Portuguese</div></div>
+        <div class="spec"><div class="spec-label">Content</div><div class="spec-value text">100 contracts · 10 chapters · daily missions</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">Links</div>
+      <h2 class="section-title">Find Ninjagrid</h2>
+      <p class="section-lead">Stores, legal, publisher pages.</p>
+      <div class="links-grid">
+        <a class="link-card" href="https://play.google.com/store/apps/details?id=com.rpd33studio.ninjagrid" target="_blank" rel="noopener">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3c-.4.3-.6.8-.6 1.4v16.6c0 .6.2 1.1.6 1.4l.1.1L13 12 3.6 2.3zM14 11l2.7-2.7L5.4 2.1c-.4-.2-.8-.2-1.1 0L14 11zm6.9 1L17.5 10.1l-3 3 3 3 3.4-1.9c1-.6 1-2 0-2.5zM4.3 21.8l9.7-9.7L17 15 5.4 21.8c-.3.2-.7.2-1.1 0z"/></svg></div>
+          <div class="link-text"><div class="link-title">Google Play</div><div class="link-url">play.google.com/.../com.rpd33studio.ninjagrid</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+        <a class="link-card" href="https://therycer.itch.io/ninjagrid" target="_blank" rel="noopener">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l4-5h10l4 5"/><path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="M9 14a3 3 0 0 0 6 0"/></svg></div>
+          <div class="link-text"><div class="link-title">itch.io</div><div class="link-url">therycer.itch.io/ninjagrid</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+        <a class="link-card" href="https://therycer.github.io/ninjagrid-legal/" target="_blank" rel="noopener">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div class="link-text"><div class="link-title">Privacy Policy</div><div class="link-url">therycer.github.io/ninjagrid-legal/</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+        <a class="link-card" href="https://therycer.github.io/app-ads.txt" target="_blank" rel="noopener">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></div>
+          <div class="link-text"><div class="link-title">app-ads.txt</div><div class="link-url">therycer.github.io/app-ads.txt</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+        <a class="link-card" href="index.html">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg></div>
+          <div class="link-text"><div class="link-title">Studio home</div><div class="link-url">therycer.github.io</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+        <a class="link-card" href="mailto:privacy@rpd33studio.com">
+          <div class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/></svg></div>
+          <div class="link-text"><div class="link-title">Contact</div><div class="link-url">privacy@rpd33studio.com</div></div>
+          <div class="link-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5M3 8h8"/></svg></div>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <span class="foot-mark"><img src="assets/rpd33-logo.png" alt="" onerror="this.parentElement.innerHTML='R';this.parentElement.style.background='linear-gradient(135deg,#76ff3d,#2bbf3a)';this.parentElement.style.color='#0a0e13';this.parentElement.style.fontWeight='900';this.parentElement.style.fontSize='11px'"></span>
+      Ninjagrid · RPD33 Studio
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Studio</a>
+      <a href="https://therycer.itch.io/ninjagrid">itch.io</a>
+      <a href="https://therycer.github.io/ninjagrid-legal/">Privacy</a>
+      <a href="https://therycer.github.io/app-ads.txt">app-ads.txt</a>
+      <a href="mailto:privacy@rpd33studio.com">privacy@rpd33studio.com</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
